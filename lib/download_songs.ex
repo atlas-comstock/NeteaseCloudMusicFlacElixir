@@ -33,7 +33,7 @@ defmodule SongDownloader do
     content_size = 
       headers["content-length"] 
       |> Integer.parse() |> elem(0) 
-      |> div(:math.pow(1024, 2) |> round) 
+      |> div(1024 * 1024) 
 
     cond do
       File.exists?(filename) ->

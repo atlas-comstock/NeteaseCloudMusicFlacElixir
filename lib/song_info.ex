@@ -61,7 +61,7 @@ defmodule Song_info do
   end
 
   def get_song_detail({:ok, download_url_info}) do
-    song_link_info = cond do
+    cond do
       download_url_info == nil -> IO.puts "song_info nil"
       download_url_info["data"] == nil -> IO.puts "song_info[data] nil"
       true -> 

@@ -4,7 +4,7 @@ defmodule SongDownloader do
   def download_songs([]) do [] end
 
   def download_songs([song_name | song_list]) do
-    IO.puts "song_name #{song_name}"
+    IO.puts "song_name: #{song_name}"
     Song_info.get_song_info(song_name)
     |> Song_info.get_song_id
     |> Song_info.get_download_url_info
@@ -14,18 +14,18 @@ defmodule SongDownloader do
     download_songs(song_list)
   end
 
-  def startDownload(%{"song_link"=> ""}) do IO.puts "can not find song link" end
+  def startDownload(%{"song_link"=> ""}) do IO.puts "can not find song link\n" end
   def startDownload(%{"song_link"=> song_link, "song_name"=> song_name, "artist_name"=> artist_name})
   do
-    IO.puts "\nsong_link is #{song_link}, song_name: #{song_name}, artist_name: #{artist_name}" 
+    IO.puts "\nsong_link is #{song_link}, song_name: #{song_name}, artist_name: #{artist_name}\n" 
     song_dir = "song_dir"
     File.mkdir(song_dir)
     filename = 
       Path.join([System.cwd(), song_dir, "#{song_name}-#{artist_name}.flac"]) 
       |> String.replace(" ", "")
       |> String.replace(",", "-")
-    IO.puts filename
 
+    IO.puts "#{song_name}  is downloading now ......\n\n"
     %{body: body, headers: headers} = 
       song_link
       |> HTTPotion.get([timeout: 100_000])

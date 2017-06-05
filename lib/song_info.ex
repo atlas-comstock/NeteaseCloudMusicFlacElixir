@@ -57,7 +57,6 @@ defmodule Song_info do
   end
 
   def get_song_detail({:error, :invalid, 0}) do
-    IO.puts "error get_song_detail : invalid"
     %{"song_link"=> ""}
   end
 

@@ -21,14 +21,14 @@ defmodule SongDownloader do
     song_dir = "song_dir"
     File.mkdir(song_dir)
     filename = 
-      Path.join([System.cwd(), song_dir, "#{song_name}-#{artist_name}"]) 
+      Path.join([System.cwd(), song_dir, "#{song_name}-#{artist_name}.flac"]) 
       |> String.replace(" ", "")
       |> String.replace(",", "-")
     IO.puts filename
 
     %{body: body, headers: headers} = 
       song_link
-      |> HTTPotion.get()
+      |> HTTPotion.get([timeout: 100_000])
 
     content_size = 
       headers["content-length"] 

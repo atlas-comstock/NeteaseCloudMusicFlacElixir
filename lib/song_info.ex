@@ -25,17 +25,21 @@ defmodule Song_info do
 
   def get_song_id({:ok, song_info}) do
     song_id_info = cond do
-      song_info == nil -> IO.puts "song_info nil"
-      song_info["data"] == nil -> IO.puts "song_info[data] nil"
+      song_info == nil -> ""
+      song_info["data"] == nil -> ""
       true -> song_info["data"]["song"] |> Enum.at(0) |> Map.fetch("songid")
     end
 
     case song_id_info do
+      "" -> ""
       {:ok, song_id} -> song_id
       {:error, reason} -> IO.puts "error get_song_id #{reason}"
     end
   end
 
+  def get_download_url_info("") do
+    ""
+  end
   def get_download_url_info(song_id) do
     query = 
       %{"songIds" => song_id, "type" => "flac"}
@@ -52,8 +56,9 @@ defmodule Song_info do
     end
   end
 
-  def get_song_detail({:error, reason}) do
-    IO.puts "error get_song_detail #{reason}"
+  def get_song_detail({:error, :invalid, 0}) do
+    IO.puts "error get_song_detail : invalid"
+    %{"song_link"=> ""}
   end
 
   def get_song_detail({:ok, download_url_info}) do

@@ -1,6 +1,5 @@
 defmodule Songlist do
   def fetch_song_list(url) do
-    IO.puts url
     url
     |> String.replace("#", "")
     |> HTTPotion.get!()

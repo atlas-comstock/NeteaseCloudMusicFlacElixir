@@ -14,7 +14,7 @@ defmodule Song_info do
       |> HTTPotion.get()
       |> Map.fetch(:body)
     ) do
-      {:ok, body} -> body
+      {:ok, body} -> body |> Poison.decode
       {:error, reason} -> IO.puts "error get_song_info #{reason}"
     end
   end

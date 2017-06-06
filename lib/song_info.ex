@@ -19,8 +19,11 @@ defmodule Song_info do
     end
   end
 
-  def get_song_id({:error, reason}) do
-    IO.puts "error get_song_id #{reason}"
+  def get_song_id({:error, _, _}) do
+    ""
+  end
+  def get_song_id(:error) do
+    ""
   end
 
   def get_song_id({:ok, song_info}) do
@@ -51,8 +54,8 @@ defmodule Song_info do
       |> HTTPotion.get()
       |> Map.fetch(:body)
     ) do
-      {:ok, body} -> body
-      {:error, reason} -> IO.puts "error get_song_info #{reason}"
+      {:ok, body} -> body |> Poison.decode
+      :error -> {:error, :invalid, 0}
     end
   end
 
@@ -72,6 +75,9 @@ defmodule Song_info do
           "artist_name" => song_detail["artistName"] || "noname",
         }
     end
+  end
+  def get_song_detail("") do
+    %{"song_link"=> ""}
   end
 
 end

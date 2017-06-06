@@ -8,7 +8,6 @@ defmodule SongDownloader do
     Song_info.get_song_info(song_name)
     |> Song_info.get_song_id
     |> Song_info.get_download_url_info
-    |> Poison.decode
     |> Song_info.get_song_detail
     |> startDownload
     download_songs(song_list)
@@ -25,25 +24,27 @@ defmodule SongDownloader do
       |> String.replace(" ", "")
       |> String.replace(",", "-")
 
-    IO.puts "#{song_name}  is downloading now ......\n\n"
-    %{body: body, headers: headers} = 
-      song_link
-      |> HTTPotion.get([timeout: 100_000])
+    if File.exists?(filename) do 
+      IO.puts "#{song_name} is already downloaded. Finding next song...\n\n"
+    else
+      IO.puts "#{song_name}  is downloading now ......\n\n"
+      %{body: body, headers: headers} = 
+        song_link
+        |> HTTPotion.get([timeout: 1_000_000])
 
-    content_size = 
-      headers["content-length"] 
-      |> Integer.parse() |> elem(0) 
-      |> div(1024 * 1024) 
+        content_size = 
+          headers["content-length"] 
+          |> Integer.parse() |> elem(0) 
+          |> div(1024 * 1024) 
 
-    cond do
-      File.exists?(filename) ->
-        IO.puts "#{song_name} is already downloaded. Finding next song...\n\n"
-      (content_size < @min_size) ->
-        IO.puts "the size of #{filename} (#{content_size} Mb) is less than 10 Mb, skipping"
-      true ->
-        {:ok, file} = File.open filename, [:write]
-        IO.binwrite file, body
+          cond do
+            (content_size < @min_size) ->
+              IO.puts "the size of #{filename} (#{content_size} Mb) is less than 10 Mb, skipping"
+            true ->
+              {:ok, file} = File.open filename, [:write]
+              IO.binwrite file, body
+          end
     end
-
   end
+
 end
